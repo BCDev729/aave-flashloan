@@ -5,8 +5,10 @@ import "../../interfaces/v2/ILendingPoolAddressesProviderV2.sol";
 import "../../interfaces/v2/ILendingPoolV2.sol";
 
 contract FlashloanV2 is FlashLoanReceiverBaseV2, Withdrawable {
-
-    constructor(address _addressProvider) FlashLoanReceiverBaseV2(_addressProvider) public {}
+    constructor(address _addressProvider)
+        public
+        FlashLoanReceiverBaseV2(_addressProvider)
+    {}
 
     /**
      * @dev This function must be called only be the LENDING_POOL and takes care of repaying
@@ -24,32 +26,29 @@ contract FlashloanV2 is FlashLoanReceiverBaseV2, Withdrawable {
         uint256[] calldata premiums,
         address initiator,
         bytes calldata params
-    )
-        external
-        override
-        returns (bool)
-    {
-        
+    ) external override returns (bool) {
         //
         // This contract now has the funds requested.
         // Your logic goes here.
         //
-        
+
         // At the end of your logic above, this contract owes
         // the flashloaned amounts + premiums.
         // Therefore ensure your contract has enough to repay
         // these amounts.
-        
+
         // Approve the LendingPool contract allowance to *pull* the owed amount
-        for (uint i = 0; i < assets.length; i++) {
-            uint amountOwing = amounts[i].add(premiums[i]);
+        for (uint256 i = 0; i < assets.length; i++) {
+            uint256 amountOwing = amounts[i].add(premiums[i]);
             IERC20(assets[i]).approve(address(LENDING_POOL), amountOwing);
         }
-        
+
         return true;
     }
 
-    function _flashloan(address[] memory assets, uint256[] memory amounts) internal {
+    function _flashloan(address[] memory assets, uint256[] memory amounts)
+        internal
+    {
         address receiverAddress = address(this);
 
         address onBehalfOf = address(this);
@@ -75,18 +74,21 @@ contract FlashloanV2 is FlashLoanReceiverBaseV2, Withdrawable {
     }
 
     /*
-     *  Flash multiple assets 
+     *  Flash multiple assets
      */
-    function flashloan(address[] memory assets, uint256[] memory amounts) public onlyOwner {
+    function flashloan(address[] memory assets, uint256[] memory amounts)
+        public
+        onlyOwner
+    {
         _flashloan(assets, amounts);
     }
 
     /*
-     *  Flash loan 1000000000000000000 wei (1 ether) worth of `_asset`
+     *  Flash loan 100000000000000000 wei (0.1 ether) worth of `_asset`
      */
     function flashloan(address _asset) public onlyOwner {
         bytes memory data = "";
-        uint amount = 1 ether;
+        uint256 amount = 100000000000000000;
 
         address[] memory assets = new address[](1);
         assets[0] = _asset;

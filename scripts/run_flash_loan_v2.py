@@ -1,6 +1,6 @@
 from brownie import FlashloanV2, accounts, config, network, interface
 
-MINIMUM_FLASHLOAN_WETH_BALANCE = 500000000000000000
+MINIMUM_FLASHLOAN_WETH_BALANCE = 200000000000000000
 ETHERSCAN_TX_URL = "https://kovan.etherscan.io/tx/{}"
 
 
@@ -15,7 +15,7 @@ def main():
     # We need to fund it if it doesn't have any token to fund!
     if weth.balanceOf(flashloan) < MINIMUM_FLASHLOAN_WETH_BALANCE:
         print("Funding Flashloan contract with WETH...")
-        weth.transfer(flashloan, "1 ether", {"from": acct})
+        weth.transfer(flashloan, 2000000000000000000, {"from": acct})
     print("Executing Flashloan...")
     tx = flashloan.flashloan(weth, {"from": acct})
     print("You did it! View your tx here: " + ETHERSCAN_TX_URL.format(tx.txid))
